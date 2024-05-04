@@ -11,7 +11,11 @@ public class WhatsappService {
     WhatsappRepository whatsappRepository = new WhatsappRepository();
 
     public String createUser(String name, String mobile) throws Exception {
-        return whatsappRepository.createUser(name, mobile);
+        if(whatsappRepository.findUserByPhone(mobile))
+        {
+            throw new Exception("User already exists");
+        }
+        return whatsappRepository.addUser(name,mobile);
     }
 
     public Group createGroup(List<User> users){
@@ -19,7 +23,7 @@ public class WhatsappService {
         // If there are only 2 users, the group is a personal chat and the group name should be kept as the name of the second user(other than admin)
         // If there are 2+ users, the name of group should be "Group #count". For example, the name of first group would be "Group 1", second would be "Group 2" and so on.
         // Note that a personal chat is not considered a group and the count is not updated for personal chats.
-        return whatsappRepository.createGroup(users);
+        return whatsappRepository.addGroup(users);
     }
 
     public int createMessage(String content){
